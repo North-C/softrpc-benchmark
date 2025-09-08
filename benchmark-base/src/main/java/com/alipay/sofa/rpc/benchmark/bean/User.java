@@ -35,6 +35,7 @@ public class User implements Serializable {
     private String              address;
     private String              icon;
     private List<Integer>       permissions;
+    private double[]            doubleList;
     private int                 status;
     private LocalDateTime       createTime;
     private LocalDateTime       updateTime;
@@ -110,6 +111,14 @@ public class User implements Serializable {
 
     public void setPermissions(List<Integer> permissions) {
         this.permissions = permissions;
+    }
+
+    public double[] getDoubleList() {
+        return doubleList;
+    }
+
+    public void setDoubleList(double[] doubleList) {
+        this.doubleList = doubleList;
     }
 
     public int getStatus() {
