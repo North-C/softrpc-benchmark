@@ -29,6 +29,7 @@ public class BoltServer {
         ProviderConfig<UserService> providerConfig;
         serverConfig = new ServerConfig()
             .setProtocol("bolt")
+            .setHost("0.0.0.0")
             .setPort(Integer.parseInt(port));
 
         providerConfig = new ProviderConfig<UserService>()

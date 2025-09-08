@@ -56,11 +56,12 @@ public class BoltClient extends AbstractClient {
         if (StringUtil.isNotBlank(threadNum)) {
             CONCURRENCY = Integer.parseInt(threadNum);
         }
+        String server = System.getProperty("server.host");
         consumerConfig = new ConsumerConfig<UserService>()
             .setRepeatedReferLimit(10)
             .setInterfaceId(UserService.class.getName()) // 指定接口
             .setProtocol("bolt") // 指定协议
-            .setDirectUrl("bolt://127.0.0.1:" + port) // 指定直连地址
+            .setDirectUrl("bolt://" + server + ":" + port) // 指定直连地址
             .setTimeout(4000);
         // 生成代理类
         userService = consumerConfig.refer();
@@ -123,9 +124,14 @@ public class BoltClient extends AbstractClient {
 
     public static void main(String[] args) throws Exception {
         LOGGER.info(Arrays.toString(args));
+        int concurrency = CONCURRENCY;
+        String threadNum = System.getProperty("thread.num");
+        if (StringUtil.isNotBlank(threadNum)) {
+            concurrency = Integer.parseInt(threadNum);
+        }
         ChainedOptionsBuilder optBuilder = JMHHelper.newBaseChainedOptionsBuilder(args)
             .include(BoltClient.class.getSimpleName())
-            .threads(CONCURRENCY)
+            .threads(concurrency)
             .forks(1);
 
         Options opt = optBuilder.build();
