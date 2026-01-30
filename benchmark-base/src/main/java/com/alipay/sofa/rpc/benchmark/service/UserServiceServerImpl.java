@@ -32,6 +32,17 @@ import java.util.zip.CRC32;
 
 public class UserServiceServerImpl implements UserService {
 
+    private static final int SIZE = 1024 * 1024;
+    private static final double[] DOUBLE_LIST;
+    private static final double[] RESULT_ARRAY = new double[1];
+
+    static {
+        DOUBLE_LIST = new double[SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            DOUBLE_LIST[i] = i * 0.1;
+        }
+    }
+
     @Override
     public boolean existUser(String email) {
         Random random = new Random();
@@ -111,19 +122,14 @@ public class UserServiceServerImpl implements UserService {
         user.setPermissions(permissions);
 
         // add computing logic
-        int size = 1024 * 1024;
-        double[] doubleList = new double[size];
-        for (int i = 0; i < size; i++) {
-            doubleList[i] = i * 0.1;
-        }
         CRC32 crc = new CRC32();
         int iterations  = 850;
         double result = 0;
         int start = 0;
         for (int i = 0; i < iterations; i++) {
             for (int j = start; j < start + 1024; j++) {
-                int index = start % size;
-                long doubleAsLong = Double.doubleToLongBits(doubleList[index]);
+                int index = start % SIZE;
+                long doubleAsLong = Double.doubleToLongBits(DOUBLE_LIST[index]);
                 crc.update((int) (doubleAsLong & 0xFF));
                 crc.update((int) ((doubleAsLong >> 8) & 0xFF));
                 crc.update((int) ((doubleAsLong >> 16) & 0xFF));
@@ -134,17 +140,16 @@ public class UserServiceServerImpl implements UserService {
                 crc.update((int) ((doubleAsLong >> 56) & 0xFF));
 
                 // 算术运算
-                double value = doubleList[index];
-                double value2 = doubleList[(index + 1) % size];
+                double value = DOUBLE_LIST[index];
+                double value2 = DOUBLE_LIST[(index + 1) % SIZE];
                 value = (value + 2.0) * 1.5 / 2.0;
                 value2 = value2 * 1.1 + 0.5 / value2;
-                doubleList[index] = (value + value2) / 2;
+                result = (value + value2) / 2;
             }
-            start = (start + 1024) % size;
+            start = (start + 1024) % SIZE;
         }
-        doubleList = new double[1];
-        doubleList[0] = result;
-        user.setDoubleList(doubleList);
+        RESULT_ARRAY[0] = result;
+        user.setDoubleList(RESULT_ARRAY);
 
         Map<String, Object> resume = new HashMap<>();
         StringBuilder notes = new StringBuilder();
