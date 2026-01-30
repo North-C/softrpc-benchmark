@@ -124,7 +124,6 @@ public class UserServiceServerImpl implements UserService {
         // add computing logic
         CRC32 crc = new CRC32();
         int iterations  = 850;
-        double result = 0;
         int start = 0;
         for (int i = 0; i < iterations; i++) {
             for (int j = start; j < start + 1024; j++) {
@@ -144,11 +143,9 @@ public class UserServiceServerImpl implements UserService {
                 double value2 = DOUBLE_LIST[(index + 1) % SIZE];
                 value = (value + 2.0) * 1.5 / 2.0;
                 value2 = value2 * 1.1 + 0.5 / value2;
-                result = (value + value2) / 2;
             }
             start = (start + 1024) % SIZE;
         }
-        RESULT_ARRAY[0] = result;
         user.setDoubleList(RESULT_ARRAY);
 
         Map<String, Object> resume = new HashMap<>();
